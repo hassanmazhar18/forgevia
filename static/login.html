@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign in — Forgevia</title>
+<meta http-equiv="Cache-Control" content="no-store">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0b0c12;color:#eef0f6;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.box{width:100%;max-width:440px;background:#12141c;border:1px solid #23263a;border-radius:18px;padding:30px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;margin-bottom:22px}.logo i{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#8b5cf6,#6366f1);display:grid;place-items:center;font-style:normal}
+h1{font-size:24px;margin:0 0 4px}p.sub{color:#8c92a8;margin:0 0 18px;font-size:14px}
+input{width:100%;padding:13px 14px;border-radius:10px;border:1px solid #2a2e45;background:#0f1118;color:#fff;font-size:15px;margin-bottom:10px;outline:none}input:focus{border-color:#8b5cf6}
+button.p{width:100%;padding:14px;border-radius:10px;border:0;background:linear-gradient(135deg,#8b5cf6,#6366f1);color:#fff;font-weight:700;font-size:15px;cursor:pointer;margin-top:4px}button.p:disabled{opacity:.6}
+.tabs{display:flex;gap:6px;background:#0f1118;padding:4px;border-radius:10px;margin-bottom:18px}.tabs button{flex:1;padding:10px;border:0;border-radius:8px;background:transparent;color:#8c92a8;font-weight:600;cursor:pointer}.tabs button.on{background:#23263a;color:#fff}
+.or{display:flex;align-items:center;gap:10px;color:#6b718a;font-size:12px;margin:16px 0}.or:before,.or:after{content:"";flex:1;height:1px;background:#23263a}
+.social{display:grid;grid-template-columns:1fr 1fr;gap:8px}.social button{padding:12px;border-radius:10px;border:1px solid #2a2e45;background:#0f1118;color:#fff;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+#msg{min-height:20px;font-size:13px;margin-top:12px;white-space:pre-wrap}.err{color:#ff6b7a}.ok{color:#3dd68c}
+.small{font-size:12px;color:#6b718a;margin-top:14px;text-align:center}.small a{color:#a78bfa}
+#log{font-family:ui-monospace,monospace;font-size:11px;color:#6b718a;margin-top:14px;max-height:120px;overflow:auto;background:#0f1118;border-radius:8px;padding:8px;display:none}
+</style></head><body>
+<div class="box">
+ <div class="logo"><i>F</i>Forgevia</div>
+ <div class="tabs"><button id="tSign" class="on" onclick="mode('in')">Sign in</button><button id="tNew" onclick="mode('up')">Create account</button></div>
+ <h1 id="h">Welcome back</h1><p class="sub" id="sub">Sign in to your workspace</p>
+ <input id="name" placeholder="Your name" style="display:none" autocomplete="name">
+ <input id="email" type="email" placeholder="Email" autocomplete="email">
+ <input id="pw" type="password" placeholder="Password (6+ characters)" autocomplete="current-password">
+ <button class="p" id="go" onclick="submit()">Sign in</button>
+ <div id="msg"></div>
+ <div class="or">or continue with</div>
+ <div class="social">
+  <button onclick="oauth('github')"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg>GitHub</button>
+  <button onclick="oauth('google')"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6v3h3.9c2.2-2.1 3.5-5.1 3.5-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 7.9-2.9l-3.9-3c-1.1.7-2.5 1.2-4 1.2-3.1 0-5.7-2.1-6.7-4.9H1.4v3.1C3.4 21.4 7.4 24 12 24z"/><path fill="#FBBC05" d="M5.3 14.4c-.5-1.5-.5-3.2 0-4.7V6.6H1.4a12 12 0 0 0 0 10.8l3.9-3z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4C17.9 1.2 15.2 0 12 0 7.4 0 3.4 2.6 1.4 6.6l3.9 3.1c1-2.8 3.6-4.9 6.7-4.9z"/></svg>Google</button>
+ </div>
+ <p class="small" id="prov"></p>
+ <p class="small">Server: <span id="srv">checking…</span> · <a href="#" onclick="document.getElementById('log').style.display='block';return false">show debug log</a></p>
+ <div id="log"></div>
+</div>
+<script>
+var up=location.search.indexOf('signup')>-1, PROV={}, MEM={};
+var $=function(id){return document.getElementById(id)};
+function log(s){var l=$('log');l.textContent+=new Date().toLocaleTimeString()+'  '+s+'\n';l.scrollTop=1e9}
+function store(k,v){if(v===undefined){if(MEM[k])return MEM[k];var r=null;try{r=localStorage.getItem(k)}catch(e){}return r}MEM[k]=v;try{localStorage.setItem(k,v)}catch(e){}try{sessionStorage.setItem(k,v)}catch(e){}try{document.cookie='fvs_'+k+'='+encodeURIComponent(v)+'; path=/; max-age=2592000; SameSite=None; Secure'}catch(e){}}
+function mode(m){up=m==='up';$('tSign').className=up?'':'on';$('tNew').className=up?'on':'';$('h').textContent=up?'Create your account':'Welcome back';$('sub').textContent=up?'Free forever. No credit card.':'Sign in to your workspace';$('name').style.display=up?'block':'none';$('go').textContent=up?'Create account':'Sign in';$('msg').textContent=''}
+function say(t,cls){$('msg').textContent=t;$('msg').className=cls||''}
+function post(url,body){log('POST '+url);return fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){log('→ '+r.status);return r.json().catch(function(){return {}}).then(function(j){j._status=r.status;return j})})}
+function submit(){
+  var email=$('email').value.trim(),pw=$('pw').value,name=$('name').value.trim();
+  if(!email||!pw){say('Please enter your email and password.','err');return}
+  if(pw.length<6){say('Password must be at least 6 characters.','err');return}
+  var b=$('go');b.disabled=true;b.textContent='Please wait…';say('Contacting server…');
+  var p=up?post('/api/auth/signup',{email:email,password:pw,name:name}):post('/api/auth/login',{email:email,password:pw});
+  p.then(function(j){
+    if(j._status===409&&up){say('That email already has an account — signing you in…');return post('/api/auth/login',{email:email,password:pw})}
+    return j
+  }).then(function(j){
+    if(j.token){store('fv_token',j.token);say('Signed in as '+(j.name||email)+' ✓ Loading your workspace…','ok');log('token saved, redirecting');location.href='/app?t='+encodeURIComponent(j.token);return}
+    var d=j.detail;if(Array.isArray(d))d=d.map(function(x){return x.msg}).join(', ');
+    say(d||('Server returned '+j._status),'err')
+  }).catch(function(e){log('ERROR '+e);say('Cannot reach the server ('+e.message+'). It may be asleep — reload in a few seconds.','err')})
+  .then(function(){b.disabled=false;b.textContent=up?'Create account':'Sign in'})
+}
+function oauth(p){if(!PROV[p]){say(p.charAt(0).toUpperCase()+p.slice(1)+' sign-in is not enabled yet. If you own this site, open /setup and paste your '+p+' keys — takes 5 minutes. Meanwhile use email.','err');return}location.href='/api/auth/'+p+'/start'}
+$('pw').addEventListener('keydown',function(e){if(e.key==='Enter')submit()});$('email').addEventListener('keydown',function(e){if(e.key==='Enter')submit()});
+window.onerror=function(m){say('Page error: '+m,'err');log('JS '+m)};
+if(up)mode('up');
+fetch('/health?'+Date.now(),{cache:'no-store'}).then(function(r){$('srv').textContent=r.ok?'online ✓':'error '+r.status;$('srv').style.color=r.ok?'#3dd68c':'#ff6b7a';log('health '+r.status)}).catch(function(e){$('srv').textContent='unreachable ✗';$('srv').style.color='#ff6b7a';log('health failed '+e)});
+fetch('/api/auth/providers').then(function(r){return r.json()}).then(function(p){PROV=p;var n=[];if(!p.github)n.push('GitHub');if(!p.google)n.push('Google');if(n.length)$('prov').innerHTML=n.join(' &amp; ')+' sign-in not enabled yet. Site owner: <a href="/setup">add the keys here</a> (5 min).'}).catch(function(){});
+var why=new URLSearchParams(location.search).get('why');if(why){log('returned from app: '+why);if(why.indexOf('storage')>-1||why.indexOf('none')>-1)say('Your previous session expired — please sign in again.','')}
+(function(){var st=[];try{localStorage.setItem('_p','1');st.push('localStorage ok')}catch(e){st.push('localStorage BLOCKED')}try{sessionStorage.setItem('_p','1');st.push('sessionStorage ok')}catch(e){st.push('sessionStorage BLOCKED')}document.cookie='_p=1; path=/';st.push(document.cookie.indexOf('_p=1')>-1?'cookies ok':'cookies BLOCKED');log(st.join(' | '))})();
+log('login page loaded v'+Date.now()+' | cookies '+(navigator.cookieEnabled?'on':'off')+' | in iframe: '+(top!==self));
+</script></body></html>
