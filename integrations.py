@@ -21,7 +21,7 @@ def cfg(k):
     v = os.environ.get(k)
     if v: return v
     if CFG_FILE.exists():
-        try: return json.loads(CFG_FILE.read_text()).get(k)
+        try: return json.loads(CFG_FILE.read_text(encoding="utf-8")).get(k)
         except Exception: pass
     return None
 
@@ -259,7 +259,7 @@ def admin_get(req: Request):
     if not _is_admin(u): raise HTTPException(403, "Only the site owner (first account) can open setup")
     cur = {}
     if CFG_FILE.exists():
-        try: cur = json.loads(CFG_FILE.read_text())
+        try: cur = json.loads(CFG_FILE.read_text(encoding="utf-8"))
         except Exception: pass
     mask = lambda v: (v[:4] + "…" + v[-4:]) if v and len(v) > 10 else ("set" if v else "")
     return {"callback_github": f"{origin(req)}/api/auth/github/callback", "callback_google": f"{origin(req)}/api/auth/google/callback",
@@ -271,14 +271,14 @@ def admin_set(k: _Keys, req: Request):
     if not _is_admin(u): raise HTTPException(403, "Only the site owner can change this")
     cur = {}
     if CFG_FILE.exists():
-        try: cur = json.loads(CFG_FILE.read_text())
+        try: cur = json.loads(CFG_FILE.read_text(encoding="utf-8"))
         except Exception: pass
     for name, val in k.model_dump().items():
         val = val.strip()
         if val: cur[name] = val
-    DATA.mkdir(exist_ok=True); CFG_FILE.write_text(json.dumps(cur, indent=2))
+    DATA.mkdir(exist_ok=True); CFG_FILE.write_text(json.dumps(cur, indent=2), encoding="utf-8")
     return {"ok": True, "providers": providers()}
 
 @router.get("/setup", response_class=HTMLResponse)
 def setup_page():
-    return HTMLResponse((Path(__file__).parent / "static" / "setup.html").read_text(), headers={"Cache-Control": "no-store"})
+    return HTMLResponse((Path(__file__).parent / "static" / "setup.html").read_text(encoding="utf-8"), headers={"Cache-Control": "no-store"})
