@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Forgevia — Dashboard</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%237c5cff'/><path d='M30 25h40v12H44v12h22v12H44v14H30z' fill='white'/></svg>">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<!-- AUTH -->
+<div id="auth" class="auth hidden">
+ <div class="authbox">
+  <div class="logo big"><i>F</i>Forgevia</div>
+  <h2 id="authTitle">Welcome back</h2>
+  <p class="mut" id="authSub">Sign in to your workspace</p>
+  <div id="authForm"><input id="aName" placeholder="Your name" class="hidden" autocomplete="name">
+  <input id="aEmail" type="email" placeholder="Email" autocomplete="email" onkeydown="if(event.key==='Enter'){event.preventDefault();doAuth()}">
+  <input id="aPw" type="password" placeholder="Password (6+ chars)" autocomplete="current-password" onkeydown="if(event.key==='Enter'){event.preventDefault();doAuth()}">
+  <button class="p full" type="button" id="authBtn" onclick="doAuth()">Sign in</button></div>
+  <div class="or"><span>or continue with</span></div>
+  <div class="social"><button class="s" onclick="oauth('github')"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg>GitHub</button>
+  <button class="s" onclick="oauth('google')"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6v3h3.9c2.2-2.1 3.5-5.1 3.5-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.2v3.1C3.2 21.3 7.3 24 12 24z"/><path fill="#FBBC05" d="M5.3 14.3c-.5-1.5-.5-3.1 0-4.6V6.6H1.2a12 12 0 0 0 0 10.8l4.1-3.1z"/><path fill="#EA4335" d="M12 4.7c1.8 0 3.3.6 4.6 1.8l3.4-3.4C17.9 1.2 15.2 0 12 0 7.3 0 3.2 2.7 1.2 6.6l4.1 3.1c.9-2.9 3.6-5 6.7-5z"/></svg>Google</button></div>
+  <p class="mut small" id="oauthNote"></p>
+  <p class="mut small" id="authSwitch">New here? <a href="#" onclick="toggleAuth();return false">Create a free account</a></p>
+  <div class="err" id="authErr"></div><p class="small" id="srvStatus"></p><p class="small mut">Embedded preview acting up? <a href="/app" target="_blank" rel="noopener">Open Forgevia in a new tab ↗</a></p>
+ </div>
+ <div class="authart"><h1>Build. Deploy.<br><span class="g">Rank.</span></h1><p>Your IDE, host, SEO suite, scraper & monitor — one tab.</p>
+  <ul><li>Publish in under a second</li><li>25-point SEO audits + auto-fix</li><li>No-code web scraper</li><li>Python &amp; Node app hosting</li><li>Sign in with GitHub · export projects to repos</li></ul></div>
+</div>
+
+<!-- SHELL -->
+<div id="shell" class="shell hidden">
+ <aside class="rail">
+  <a class="logo" href="/" title="Forgevia"><i>F</i></a>
+  <button data-v="home" class="on" title="Dashboard"><svg viewBox="0 0 24 24"><path d="M3 12 12 3l9 9M5 10v10h5v-6h4v6h5V10"/></svg><span>Home</span></button>
+  <button data-v="editor" title="Editor"><svg viewBox="0 0 24 24"><path d="m8 9-4 3 4 3M16 9l4 3-4 3M14 4l-4 16"/></svg><span>Code</span></button>
+  <button data-v="deploy" title="Deploy"><svg viewBox="0 0 24 24"><path d="M12 2c4 3 5 8 5 12l3 3-1 3-4-2H9l-4 2-1-3 3-3c0-4 1-9 5-12z"/><circle cx="12" cy="10" r="2"/></svg><span>Deploy</span></button>
+  <button data-v="seo" title="SEO"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M14 7h7v7"/></svg><span>SEO</span></button>
+  <button data-v="scrape" title="Scraper"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4M8 11h6M11 8v6"/></svg><span>Scrape</span></button>
+  <button data-v="analytics" title="Analytics"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg><span>Stats</span></button>
+  <button data-v="forms" title="Forms"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10M7 13h6"/></svg><span>Forms</span></button>
+  <button data-v="monitor" title="Uptime"><svg viewBox="0 0 24 24"><path d="M2 12h4l3-8 4 16 3-8h6"/></svg><span>Uptime</span></button>
+  <button data-v="tools" title="Tools"><svg viewBox="0 0 24 24"><path d="M14 7a4 4 0 0 0 5 5l-9 9-3-3 9-9M3 21l3-3"/></svg><span>Tools</span></button>
+  <a href="/leaderboard" target="_blank" class="railbtn" title="Leaderboard"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M6 3h12v5a6 6 0 0 1-12 0zM6 5H3v2a4 4 0 0 0 3 3.9M18 5h3v2a4 4 0 0 1-3 3.9"/></svg><span>Top</span></a><a href="/setup" target="_blank" class="railbtn" title="Owner setup"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Setup</span></a>
+  <div class="grow"></div>
+  <button data-v="account" title="Account"><span class="avatar" id="avatar">?</span></button>
+ </aside>
+
+ <main id="views">
+  <!-- HOME -->
+  <section data-view="home" class="view on">
+   <div class="wrap">
+    <div class="rowb"><div><h1>Good <span id="tod">day</span>, <span id="uName"></span></h1><p class="mut">Here's what's happening across your projects.</p></div>
+     <button class="p" data-i="plus" onclick="openNew()">New project</button></div>
+    <div class="start" id="startPanel">
+     <div class="startHead"><div><h3>Start here</h3><p class="mut">Three things you can do right now — each takes under a minute.</p></div><button class="s small" onclick="hideStart()">Hide</button></div>
+     <div class="startGrid">
+      <button class="startCard" onclick="openNew()"><span class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span><b>Build a website</b><small>Pick a template, edit it, publish with one click. You get a live link instantly.</small><span class="cta">New project →</span></button>
+      <button class="startCard" onclick="go('seo');seoAudit('https://example.com')"><span class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#3dd68c" stroke-width="1.8" stroke-linecap="round"><path d="M3 17l6-6 4 4 8-8M14 7h7v7"/></svg></span><b>Audit any site's SEO</b><small>25-point check with a score and exact fixes. Try it on example.com now.</small><span class="cta">Run demo audit →</span></button>
+      <button class="startCard" onclick="go('scrape');scDemo()"><span class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#60a5fa" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4M8 11h6M11 8v6"/></svg></span><b>Scrape a web page</b><small>Pull headings, links, emails or tables from any public page, no code.</small><span class="cta">Run demo scrape →</span></button>
+     </div>
+     <div class="startSteps"><span class="step done" id="s1">1 · Account created</span><span class="step" id="s2">2 · Open your sample site</span><span class="step" id="s3">3 · Publish a change</span><span class="step" id="s4">4 · Share your link</span></div>
+    </div>
+    <div class="kpis"><div><small>Projects</small><b id="kProj">0</b></div><div><small>Published</small><b id="kPub">0</b></div><div><small>Views (all time)</small><b id="kHits">0</b></div><div><small>Running apps</small><b id="kApps">0</b></div></div>
+    <div class="rowb" style="margin-top:34px"><h3>Your projects</h3><input id="projFilter" placeholder="Filter…" style="width:200px" oninput="renderProjects()"></div>
+    <div class="cards" id="projCards"></div>
+    <h3 style="margin-top:40px">Recent activity</h3><div class="activity" id="activity"></div>
+   </div>
+  </section>
+
+  <!-- EDITOR -->
+  <section data-view="editor" class="view editor">
+   <div class="files" id="filePane">
+    <div class="ph"><select id="projSel" onchange="openProject(this.value)"></select></div>
+    <div class="ph small"><span>FILES</span><span class="acts"><i title="New file" data-i="plus" data-sz="14" onclick="newFile()"></i><i title="New folder" data-i="folder" data-sz="14" onclick="newFile(true)"></i><i title="Upload" data-i="upload" data-sz="14" onclick="uploadEl.click()"></i><i title="Search (Ctrl+Shift+F)" data-i="search" data-sz="14" onclick="toggleSearch()"></i></span></div>
+    <input type="file" id="uploadEl" multiple class="hidden" onchange="uploadFiles(this.files)">
+    <div id="searchBox" class="hidden"><input id="searchQ" placeholder="Search in files…" oninput="searchFiles(this.value)"><div id="searchRes"></div></div>
+    <div id="tree" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="event.preventDefault();this.classList.remove('drag');uploadFiles(event.dataTransfer.files)"></div>
+    <div class="ph small" style="margin-top:auto"><span>VERSIONS</span><i onclick="snap()" title="Snapshot now" data-i="camera" data-sz="14"></i></div><div id="versions" class="vers"></div>
+   </div>
+   <div class="col">
+    <div class="tabs" id="tabs"></div>
+    <div class="edtop"><span id="crumb" class="mut mono">—</span><span class="grow"></span>
+     <button class="s" data-i="sparkle" onclick="formatDoc()" title="Format">Format</button>
+     <button class="s" data-i="eye" onclick="togglePrev()">Preview</button>
+     <button class="s" data-i="bot" onclick="toggleAi()" title="Assistant (Ctrl+I)">Assist</button>
+     <button class="s" data-i="term" onclick="toggleTerm()" title="Terminal (Ctrl+`)">Terminal</button>
+     <button class="p" data-i="rocket" onclick="publish()" title="Publish (Ctrl+Shift+P)">Publish</button></div>
+    <div class="split">
+     <div id="monaco"></div>
+     <div class="prevpane" id="prevPane"><div class="prevbar"><span id="prevUrl" class="mono mut">preview</span><span class="grow"></span><button class="s" data-i="desktop" onclick="setDevice('100%')"></button><button class="s" data-i="tablet" onclick="setDevice('768px')"></button><button class="s" data-i="phone" onclick="setDevice('375px')"></button><button class="s" data-i="refresh" onclick="refreshPreview()"></button><a class="s" data-i="ext" id="openLive" target="_blank"></a></div><div class="frame"><iframe id="prev" sandbox="allow-scripts allow-forms allow-modals allow-same-origin"></iframe></div></div>
+     <div class="ai hidden" id="aiPane"><div class="prevbar"><b data-i="bot">&nbsp;Assistant</b><span class="grow"></span><button class="s" onclick="toggleAi()">✕</button></div><div class="aimsgs" id="aiMsgs"><div class="msg bot">Ask me to generate a <b>navbar</b>, <b>pricing table</b>, <b>contact form</b>, <b>FAQ</b>… paste an <b>error</b> for a diagnosis, or ask <b>how to</b> do anything.</div></div><div class="aiin"><input id="aiQ" placeholder="Ask anything…" onkeydown="event.key==='Enter'&&askAi()"><button class="p" onclick="askAi()">→</button></div></div>
+    </div>
+    <div class="term hidden" id="termPane"><div class="prevbar"><b data-i="term">&nbsp;Terminal</b><span class="mut small" style="margin-left:10px">cwd: project root · 30s limit</span><span class="grow"></span><button class="s" onclick="termOut.textContent=''">Clear</button><button class="s" onclick="toggleTerm()">✕</button></div><pre id="termOut"></pre><div class="termin"><span class="mono" style="color:#7c5cff">$</span><input id="termIn" placeholder="ls, cat file, python3 script.py, npm install…" onkeydown="termKey(event)"></div></div>
+    <div class="status"><span id="stPub">● Not published</span><span id="stSave"></span><span class="grow"></span><span id="stPos" class="mono">Ln 1, Col 1</span><span id="stLang"></span></div>
+   </div>
+  </section>
+
+  <!-- DEPLOY -->
+  <section data-view="deploy" class="view"><div class="wrap">
+   <div class="rowb"><div><h1>Deploy</h1><p class="mut">Publishing, live URL, app process, domains & settings for <b id="dpName">—</b></p></div><select id="dpSel" onchange="openProject(this.value);renderDeploy()"></select></div>
+   <div class="grid2">
+    <div class="card"><h3 data-i="rocket">Publish</h3><p class="mut small">Publishing copies your project to a public link. Change anything in Code, then press Publish again to update it.</p><p id="dpStatus" class="mut">—</p><div class="row"><button class="p" onclick="publish()">Publish now</button><button class="s" onclick="unpublish()">Unpublish</button><button class="s" data-i="download" onclick="exportZip()">Export ZIP</button></div><div id="dpUrl" class="urlbox hidden"><span class="mono"></span><button class="s" data-i="copy" onclick="copy(dpUrl.querySelector('span').textContent)">Copy</button><a class="s" target="_blank">Open ↗</a><button class="s" data-i="qr" onclick="qr()">QR</button></div><div id="qrBox"></div></div>
+    <div class="card" id="appCard"><h3 data-i="cpu">App process</h3><p class="mut">For Python / Node projects. Must listen on <code>$PORT</code>.</p><div class="row"><span id="appState" class="badge">stopped</span><button class="s" data-i="play" onclick="appAct('start')">Start / Restart</button><button class="s" data-i="stop" onclick="appAct('stop')">Stop</button><button class="s" data-i="refresh" onclick="appLogs()">Logs</button></div><pre id="appLog" class="log">No logs yet.</pre></div>
+    <div class="card"><h3 data-i="share">Export to GitHub</h3><p class="mut small" id="ghLinkInfo">Push this project's files to a repository as a single commit.</p>
+     <label>Repository <input id="ghRepo" placeholder="owner/name — leave blank to create a new repo named after this project"></label>
+     <label>Commit message <input id="ghMsg" value="Deploy from Forgevia"></label>
+     <div class="row"><label class="s" style="margin:0"><input type="checkbox" id="ghPriv" style="width:auto;margin:0 6px 0 0">Private</label><label class="s" style="margin:0"><input type="checkbox" id="ghPages" style="width:auto;margin:0 6px 0 0">Enable GitHub Pages</label><span class="grow"></span><button class="p" data-i="upload" onclick="ghPush()">Push to GitHub</button></div>
+     <div id="ghPushOut"></div></div>
+    <div class="card"><h3 data-i="globe">Custom domain</h3><div class="row"><input id="domIn" placeholder="www.yourdomain.com"><button class="p" onclick="addDomain()">Add</button></div><div id="domList"></div></div>
+    <div class="card"><h3 data-i="settings">Settings</h3>
+     <label>Default SEO title<input id="sTitle"></label><label>Default description<input id="sDesc"></label><label>Google Analytics ID<input id="sGa" placeholder="G-XXXXXXX"></label><label>Password protect (blank = public)<input id="sPw"></label><label>Runtime<select id="sKind"><option value="static">Static site</option><option value="python">Python app</option><option value="node">Node.js app</option></select></label>
+     <div class="row"><button class="p" onclick="saveSettings()">Save</button><button class="s" onclick="renameProj()">Rename</button><button class="s" onclick="dupProj()">Duplicate</button><button class="s danger" onclick="delProj()">Delete</button></div></div>
+   </div></div></section>
+
+  <!-- SEO -->
+  <section data-view="seo" class="view"><div class="wrap">
+   <h1>SEO Suite</h1><p class="mut">Audit, crawl, research, generate and auto-fix.</p>
+   <div class="subtabs"><button class="on" data-s="audit">Audit</button><button data-s="crawl">Site crawl</button><button data-s="kw">Keywords</button><button data-s="gen">Generator</button><button data-s="fix">Auto-fix</button></div>
+   <div data-sub="audit" class="sub on"><p class="help">Enter any web address. You'll get a score out of 100 and a list of exactly what to fix. <a href="#" onclick="seoAudit('https://example.com');return false">Try example.com</a> · <a href="#" onclick="seoAudit(mySiteUrl());return false">Audit my site</a></p><div class="row"><input id="seoUrl" placeholder="https://yoursite.com or /sites/my-project/" value="https://example.com"><button class="p" onclick="seoAudit()">Audit page</button></div><div id="seoOut"></div></div>
+   <div data-sub="crawl" class="sub"><p class="help">Follows links across a whole site and reports broken links, duplicate titles and slow pages.</p><div class="row"><input id="crawlUrl" placeholder="https://yoursite.com" value="https://example.com"><select id="crawlN" style="width:120px"><option>10</option><option selected>25</option><option>50</option></select><button class="p" onclick="seoCrawl()">Crawl site</button></div><div id="crawlOut"></div></div>
+   <div data-sub="kw" class="sub"><p class="help">Type one topic and get related search phrases people actually look for.</p><div class="row"><input id="kwIn" placeholder="seed keyword, e.g. web hosting" value="web hosting pakistan"><button class="p" onclick="seoKw()">Find keywords</button></div><div id="kwOut"></div></div>
+   <div data-sub="gen" class="sub"><div class="grid2"><div class="card"><label>Page topic<input id="gTopic" placeholder="Best pizza in Lahore" value="Best pizza in Lahore"></label><label>Keywords (comma-separated)<input id="gKw" placeholder="pizza lahore, pizza delivery" value="pizza lahore, pizza delivery"></label><label>Brand<input id="gBrand" placeholder="Slice House" value="Slice House"></label><label>Type<select id="gType"><option value="website">Website</option><option value="article">Article</option><option value="product">Product</option><option value="business">Local business</option><option value="faq">FAQ</option></select></label><button class="p" onclick="seoGen()">Generate</button></div><div id="genOut" class="card"><p class="mut">Title, description, slug, Open Graph, JSON-LD & content outline will appear here.</p></div></div></div>
+   <div data-sub="fix" class="sub"><div class="card"><h3>One-click SEO auto-fix</h3><p class="mut">Adds missing charset, viewport, lang, title, description, Open Graph, Twitter card, canonical, image alt text, lazy-loading, script defer and noopener across <b>every HTML file</b> in the selected project. A snapshot is taken first so you can roll back.</p><div class="row"><select id="fixSel"></select><button class="p" onclick="seoFix()">Run auto-fix</button></div><div id="fixOut"></div></div></div>
+  </div></section>
+
+  <!-- SCRAPE -->
+  <section data-view="scrape" class="view"><div class="wrap">
+   <h1>Web Scraper</h1><p class="mut">Extract anything from any public page. No code required.</p>
+   <div class="card">
+    <p class="help">Paste a page address, choose what to extract, press Scrape. <a href="#" onclick="scDemo();return false">Run a demo (headings from example.com)</a></p><div class="row"><input id="scUrl" placeholder="https://example.com/products" style="flex:3" value="https://example.com"><button class="s" data-i="search" onclick="scInspect()">Inspect</button><button class="p" onclick="scrape()">Scrape</button></div>
+    <div class="row"><select id="scMode" style="flex:1"><option value="text">Page text</option><option value="markdown">Markdown</option><option value="links">Links</option><option value="images">Images</option><option value="headings">Headings</option><option value="table">Tables</option><option value="emails">Emails</option><option value="phones">Phone numbers</option><option value="meta">Meta tags</option><option value="json">JSON-LD data</option></select>
+     <input id="scSel" placeholder="CSS selector (optional) e.g. .product" style="flex:2"><input id="scAttr" placeholder="attr e.g. href" style="flex:1"></div>
+    <details><summary class="mut">Structured fields & pagination</summary>
+     <div class="row" style="margin-top:10px"><textarea id="scFields" rows="3" placeholder='Fields (one per line): name: selector[@attr]&#10;title: h2 a&#10;link: h2 a@href&#10;price: .price' style="flex:2"></textarea><div style="flex:1"><input id="scNext" placeholder="Next-page selector e.g. a.next"><input id="scPages" type="number" value="1" min="1" max="20" placeholder="Pages" style="margin-top:8px"></div></div></details>
+   </div>
+   <div id="scInspectOut"></div>
+   <div class="row"><button class="s" data-i="download" onclick="dl('json')">JSON</button><button class="s" data-i="download" onclick="dl('csv')">CSV</button><button class="s" onclick="copy(typeof last?.data==='string'?last.data:JSON.stringify(last?.data,null,2))">Copy</button><span id="scMeta" class="mut"></span></div>
+   <div id="scOut" class="card"><pre>Results appear here…</pre></div>
+  </div></section>
+
+  <!-- ANALYTICS -->
+  <section data-view="analytics" class="view"><div class="wrap">
+   <div class="rowb"><div><h1>Analytics</h1><p class="mut">Visitor counts for your published sites — automatic, no setup, no cookies. <a href="#" onclick="anDemo();return false">Simulate 5 visits</a></p></div><div class="row"><select id="anSel" onchange="loadAnalytics()"></select><select id="anDays" onchange="loadAnalytics()"><option value="7">7 days</option><option value="30" selected>30 days</option><option value="90">90 days</option></select></div></div>
+   <div class="kpis"><div><small>Page views</small><b id="anTotal">0</b></div><div><small>Unique visitors</small><b id="anUniq">0</b></div><div><small>Views / visitor</small><b id="anAvg">0</b></div><div><small>Top page</small><b id="anTop" style="font-size:16px">—</b></div></div>
+   <div class="card"><h3>Traffic</h3><svg id="anChart" viewBox="0 0 800 200" preserveAspectRatio="none"></svg></div>
+   <div class="grid2"><div class="card"><h3>Top pages</h3><table id="anPages"></table></div><div class="card"><h3>Referrers</h3><table id="anRefs"></table></div><div class="card"><h3>Devices</h3><table id="anDev"></table></div><div class="card"><h3>Browsers</h3><table id="anBr"></table></div></div>
+  </div></section>
+
+  <!-- FORMS -->
+  <section data-view="forms" class="view"><div class="wrap">
+   <div class="rowb"><div><h1>Form submissions</h1><p class="mut">Every contact form on your published sites sends its messages here — no backend needed. <a href="#" onclick="formsDemo();return false">Send a test message</a></p></div><div class="row"><select id="fmSel" onchange="loadForms()"></select><button class="s" data-i="download" onclick="dlForms()">CSV</button></div></div>
+   <div id="fmOut"></div>
+  </div></section>
+
+  <!-- MONITOR -->
+  <section data-view="monitor" class="view"><div class="wrap">
+   <h1>Uptime monitor</h1><p class="mut">Checks every 5 minutes. Response time and uptime history.</p>
+   <p class="help">Add any address and Forgevia will ping it every 5 minutes and record uptime and speed. <a href="#" onclick="$('#monUrl').value=mySiteUrl();addMon();return false">Monitor my site</a></p><div class="row"><input id="monUrl" placeholder="https://yoursite.com" value="https://example.com"><button class="p" onclick="addMon()">Add monitor</button><button class="s" data-i="refresh" onclick="loadMon()"></button></div>
+   <div id="monOut"></div>
+  </div></section>
+
+  <!-- TOOLS -->
+  <section data-view="tools" class="view"><div class="wrap">
+   <h1>Toolbox</h1><p class="mut">Domain, DNS, security and performance utilities.</p>
+   <div class="grid2">
+    <div class="card"><h3 data-i="globe">Domain availability</h3><div class="row"><input id="tDom" placeholder="mybrand" value="forgevia"><button class="p" onclick="tDomain()">Check</button></div><div id="tDomOut"></div></div>
+    <div class="card"><h3 data-i="zap">Page speed</h3><div class="row"><input id="tSpeed" placeholder="https://…" value="https://example.com"><button class="p" onclick="tSpeedRun()">Test</button></div><div id="tSpeedOut"></div></div>
+    <div class="card"><h3 data-i="shield">HTTP headers &amp; security</h3><div class="row"><input id="tHdr" placeholder="https://…" value="https://example.com"><button class="p" onclick="tHeaders()">Scan</button></div><div id="tHdrOut"></div></div>
+    <div class="card"><h3 data-i="dns">DNS lookup</h3><div class="row"><input id="tDns" placeholder="example.com" value="example.com"><button class="p" onclick="tDnsRun()">Lookup</button></div><div id="tDnsOut"></div></div>
+    <div class="card"><h3 data-i="id">WHOIS</h3><div class="row"><input id="tWho" placeholder="example.com" value="example.com"><button class="p" onclick="tWhois()">Lookup</button></div><div id="tWhoOut"></div></div>
+    <div class="card"><h3 data-i="share">Share a snippet</h3><input id="snTitle" placeholder="Title"><textarea id="snCode" rows="4" placeholder="Paste code…"></textarea><div class="row"><button class="p" onclick="snShare()">Create link</button><span id="snOut" class="mono"></span></div></div>
+    <div class="card"><h3 data-i="flask">Playground</h3><div class="row"><select id="pgLang" style="width:120px"><option value="python">Python</option><option value="node">Node</option><option value="bash">Bash</option></select><button class="p" data-i="play" onclick="pgRun()">Run</button></div><textarea id="pgCode" rows="6" class="mono">print("Hello from Forgevia")
+print(sum(range(101)))</textarea><pre id="pgOut" class="log"></pre></div>
+   </div>
+  </div></section>
+
+  <!-- ACCOUNT -->
+  <section data-view="account" class="view"><div class="wrap">
+   <h1>Account</h1><div class="card"><p><b id="acName"></b> · <span id="acEmail" class="mut"></span></p><p>Plan: <span class="badge" id="acPlan">free</span></p><div class="row"><button class="s" onclick="logout()">Sign out</button><a class="s" href="/api/docs" target="_blank">API docs ↗</a></div></div>
+   <div class="card"><h3 data-i="link">Connections</h3><div id="connList"></div>
+    <details style="margin-top:10px"><summary class="mut small">Connect GitHub with a Personal Access Token instead</summary><div class="row" style="margin-top:8px"><input id="ghTok" type="password" placeholder="ghp_… (needs repo scope)"><button class="p" onclick="ghConnect()">Connect</button></div><p class="mut small">Create one at github.com/settings/tokens → Generate new token (classic) → tick <b>repo</b>.</p></details></div>
+   <div class="card"><h3 data-i="upload">Import from GitHub</h3><div class="row"><input id="ghImportRepo" placeholder="owner/repo or https://github.com/owner/repo"><input id="ghImportName" placeholder="project name (optional)" style="max-width:220px"><button class="p" onclick="ghImport()">Import</button></div><div id="ghRepos" class="kwchips"></div></div>
+   <div class="card"><h3>Keyboard shortcuts</h3><table class="kbd"><tr><td>Ctrl+S</td><td>Save</td></tr><tr><td>Ctrl+P</td><td>Quick-open file</td></tr><tr><td>Ctrl+Shift+P</td><td>Publish</td></tr><tr><td>Ctrl+`</td><td>Terminal</td></tr><tr><td>Ctrl+I</td><td>Assistant</td></tr><tr><td>Ctrl+Shift+F</td><td>Search in project</td></tr><tr><td>Ctrl+B</td><td>Toggle file pane</td></tr></table></div>
+  </div></section>
+ </main>
+</div>
+
+<!-- NEW PROJECT MODAL -->
+<dialog id="newDlg"><h2>New project</h2><p class="mut small" style="margin:-6px 0 10px">Pick a template, give it a name, and you can publish it in the next step.</p><input id="npName" placeholder="project-name (lowercase, dashes)"><p class="mut small">Your site will live at <span class="mono">/sites/&lt;name&gt;/</span></p><div class="tpls" id="tpls"></div><div class="row" style="margin-top:14px"><label class="s" style="cursor:pointer" data-i="upload">Import ZIP<input type="file" id="zipIn" accept=".zip" class="hidden" onchange="importZip(this.files[0])"></label><span class="grow"></span><button class="s" onclick="newDlg.close()">Cancel</button><button class="p" onclick="createProject()">Create</button></div></dialog>
+<dialog id="quickDlg"><input id="quickQ" placeholder="Jump to file…" oninput="quickFilter()" onkeydown="quickKey(event)"><div id="quickList"></div></dialog>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+<script src="/static/app.js"></script>
+</body></html>
