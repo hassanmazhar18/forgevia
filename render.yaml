@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: forgevia
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: "8000"
+      - key: FV_BACKUP_REPO
+        value: hassanmazhar18/forgevia-data
+      - key: FV_BACKUP_TOKEN
+        sync: false
