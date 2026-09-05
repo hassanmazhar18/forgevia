@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Setup — Forgevia</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0b0c12;color:#eef0f6;padding:32px 16px}
+.wrap{max-width:760px;margin:0 auto}h1{font-size:28px;margin:0 0 6px}p.sub{color:#8c92a8;margin:0 0 24px}
+.card{background:#12141c;border:1px solid #23263a;border-radius:16px;padding:24px;margin-bottom:18px}
+.card h2{margin:0 0 4px;font-size:18px;display:flex;align-items:center;gap:10px}.badge{font-size:11px;padding:3px 8px;border-radius:99px;background:#2a2e45;color:#aab}.badge.on{background:#123d2a;color:#3dd68c}
+ol{color:#c7cbe0;line-height:1.7;padding-left:20px;margin:10px 0 16px}code{background:#0f1118;border:1px solid #2a2e45;padding:2px 6px;border-radius:6px;font-size:13px;color:#a78bfa;word-break:break-all}
+.copy{display:flex;gap:8px;align-items:center;margin:6px 0 14px}.copy code{flex:1;padding:9px 10px}.copy button{padding:9px 12px}
+label{display:block;font-size:12px;color:#8c92a8;margin:10px 0 4px}input{width:100%;padding:12px;border-radius:10px;border:1px solid #2a2e45;background:#0f1118;color:#fff;font-size:14px}
+button{border:0;border-radius:10px;background:#23263a;color:#fff;font-weight:600;cursor:pointer;padding:12px 16px}button.p{background:linear-gradient(135deg,#8b5cf6,#6366f1)}
+#msg{margin-top:12px;font-size:14px;min-height:20px}.ok{color:#3dd68c}.err{color:#ff6b7a}
+a{color:#a78bfa}.row{display:flex;gap:10px;margin-top:16px;align-items:center}
+</style></head><body><div class="wrap">
+<h1>Sign-in providers setup</h1>
+<p class="sub">Paste the keys from GitHub / Google here. The buttons on the login page go live immediately — no restart, no files to edit. Only the site owner (first account) can see this page.</p>
+<div id="gate" class="card" style="display:none"><b>Please <a href="/login">sign in</a> as the owner account first.</b> <span id="gateMsg"></span></div>
+<div id="main" style="display:none">
+
+<div class="card"><h2>GitHub <span class="badge" id="bGh">not configured</span></h2>
+<ol>
+<li>Open <a href="https://github.com/settings/developers" target="_blank" rel="noopener">github.com/settings/developers</a> → <b>OAuth Apps</b> → <b>New OAuth App</b></li>
+<li>Application name: <code>Forgevia</code> · Homepage URL: <code id="oriGh"></code></li>
+<li>Authorization callback URL — copy this exactly:</li>
+</ol>
+<div class="copy"><code id="cbGh"></code><button onclick="cp('cbGh')">Copy</button></div>
+<ol start="4"><li>Click <b>Register application</b>, then <b>Generate a new client secret</b>. Paste both below.</li></ol>
+<label>Client ID</label><input id="GITHUB_CLIENT_ID" placeholder="Iv1.abc123… or Ov23li…">
+<label>Client secret</label><input id="GITHUB_CLIENT_SECRET" type="password" placeholder="40-character secret">
+</div>
+
+<div class="card"><h2>Google <span class="badge" id="bGo">not configured</span></h2>
+<ol>
+<li>Open <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener">console.cloud.google.com/apis/credentials</a> (create a project if asked)</li>
+<li>First time only: <b>OAuth consent screen</b> → External → app name <code>Forgevia</code>, your email → Save. Add yourself as a test user (or publish the app).</li>
+<li><b>Create credentials → OAuth client ID → Web application</b></li>
+<li>Authorized JavaScript origin: <code id="oriGo"></code></li>
+<li>Authorized redirect URI — copy this exactly:</li>
+</ol>
+<div class="copy"><code id="cbGo"></code><button onclick="cp('cbGo')">Copy</button></div>
+<label>Client ID</label><input id="GOOGLE_CLIENT_ID" placeholder="1234567890-abc.apps.googleusercontent.com">
+<label>Client secret</label><input id="GOOGLE_CLIENT_SECRET" type="password" placeholder="GOCSPX-…">
+</div>
+
+<div class="row"><button class="p" onclick="save()">Save keys</button><a href="/login">Test on the login page →</a><span id="msg"></span></div>
+<p class="sub" style="margin-top:22px">⚠️ Keys are tied to the exact address above. When you move Forgevia to your real domain (e.g. forgevia.com), add the new callback URLs in GitHub/Google too — you can keep both.</p>
+</div></div>
+<script>
+var MEM={};function tok(){try{return localStorage.getItem('fv_token')}catch(e){return null}}
+var q=new URLSearchParams(location.search);if(q.get('t')){try{localStorage.setItem('fv_token',q.get('t'))}catch(e){MEM.t=q.get('t')}}
+function H(){var t=tok()||MEM.t;return t?{'Authorization':'Bearer '+t,'Content-Type':'application/json'}:{'Content-Type':'application/json'}}
+var $=function(i){return document.getElementById(i)};
+function cp(id){navigator.clipboard&&navigator.clipboard.writeText($(id).textContent);$('msg').textContent='Copied ✓';$('msg').className='ok';setTimeout(function(){$('msg').textContent=''},1500)}
+fetch('/api/admin/oauth',{headers:H()}).then(function(r){return r.json().then(function(j){j._s=r.status;return j})}).then(function(j){
+  if(j._s!==200){$('gate').style.display='block';$('gateMsg').textContent=j.detail||'';return}
+  $('main').style.display='block';$('cbGh').textContent=j.callback_github;$('cbGo').textContent=j.callback_google;$('oriGh').textContent=j.origin;$('oriGo').textContent=j.origin;
+  if(j.GITHUB_CLIENT_ID){$('bGh').textContent='configured · '+j.GITHUB_CLIENT_ID;$('bGh').className='badge on'}
+  if(j.GOOGLE_CLIENT_ID){$('bGo').textContent='configured · '+j.GOOGLE_CLIENT_ID;$('bGo').className='badge on'}
+});
+function save(){var b={};['GITHUB_CLIENT_ID','GITHUB_CLIENT_SECRET','GOOGLE_CLIENT_ID','GOOGLE_CLIENT_SECRET'].forEach(function(k){b[k]=$(k).value.trim()});
+  $('msg').textContent='Saving…';$('msg').className='';
+  fetch('/api/admin/oauth',{method:'POST',headers:H(),body:JSON.stringify(b)}).then(function(r){return r.json()}).then(function(j){
+    if(j.ok){$('msg').textContent='Saved ✓  GitHub: '+(j.providers.github?'ON':'off')+' · Google: '+(j.providers.google?'ON':'off');$('msg').className='ok';if(j.providers.github){$('bGh').textContent='configured';$('bGh').className='badge on'}if(j.providers.google){$('bGo').textContent='configured';$('bGo').className='badge on'}}
+    else{$('msg').textContent=j.detail||'Failed';$('msg').className='err'}
+  }).catch(function(e){$('msg').textContent='Error: '+e.message;$('msg').className='err'})}
+</script></body></html>
