@@ -162,6 +162,12 @@ from templates import TEMPLATES
 try:
     import persist as _persist
     _persist.restore(DATA); _persist.start_backup_loop(DATA)
+    @app.middleware("http")
+    async def _mark_dirty(request, call_next):
+        resp = await call_next(request)
+        if request.method in ("POST", "PUT", "DELETE", "PATCH") and resp.status_code < 400 and "/beacon/" not in request.url.path:
+            _persist.mark_dirty()
+        return resp
 except Exception as _e:
     print("persist disabled:", _e)
 
