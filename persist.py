@@ -5,7 +5,9 @@ import os, io, time, threading, tarfile, base64, json, hashlib
 import httpx
 
 REPO = os.environ.get("FV_BACKUP_REPO"); TOKEN = os.environ.get("FV_BACKUP_TOKEN")
-EVERY = int(os.environ.get("FV_BACKUP_MINUTES", "10")) * 60
+EVERY = int(os.environ.get("FV_BACKUP_MINUTES", "5")) * 60
+_dirty = {"at": 0.0}
+DEBOUNCE = 45  # seconds after last change before an immediate backup
 API = "https://api.github.com"
 _last = {"hash": None}
 
@@ -46,12 +48,34 @@ def restore(data):
         with tarfile.open(fileobj=io.BytesIO(r.content), mode="r:gz") as t: t.extractall(data)
     print("persist: restored from backup"); return True
 
+def mark_dirty():
+    """Call after any write (signup, file save, publish...). Triggers a backup ~45s later."""
+    _dirty["at"] = time.time()
+
+def backup_now(data):
+    try: return backup(data)
+    except Exception as e: print("persist error:", e); return False
+
+def install_shutdown_hook(data):
+    import atexit, signal
+    def _bye(*a):
+        print("persist: shutdown → final backup"); backup_now(data)
+        raise SystemExit(0)
+    atexit.register(lambda: backup_now(data))
+    try: signal.signal(signal.SIGTERM, _bye)
+    except Exception: pass
+
 def start_backup_loop(data):
     if not enabled(): print("persist: not configured (set FV_BACKUP_REPO + FV_BACKUP_TOKEN)"); return
     def loop():
+        last = time.time()
         while True:
-            time.sleep(EVERY)
-            try: backup(data)
-            except Exception as e: print("persist error:", e)
+            time.sleep(5)
+            now = time.time()
+            due = (now - last >= EVERY) or (_dirty["at"] and now - _dirty["at"] >= DEBOUNCE)
+            if due:
+                _dirty["at"] = 0.0; last = now
+                backup_now(data)
+    install_shutdown_hook(data)
     threading.Thread(target=loop, daemon=True).start()
     print(f"persist: enabled → {REPO} every {EVERY//60} min")
