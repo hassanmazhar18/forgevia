@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Leaderboard — Top sites built on Forgevia</title>
+<meta name="description" content="The most visited sites and most active builders on Forgevia this week, month and all time.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%237c5cff'/><path d='M30 25h40v12H44v12h22v12H44v14H30z' fill='white'/></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#06070b;--fg:#eef0f6;--mut:#8a90a6;--line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.12);--acc:#8b5cf6;--cy:#22d3ee;--ok:#34d399}
+*{box-sizing:border-box;margin:0}body{font:14px/1.55 Inter,system-ui,sans-serif;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased;min-height:100vh}
+body:before{content:"";position:fixed;inset:0;background:radial-gradient(1000px 500px at 50% -10%,rgba(139,92,246,.22),transparent 60%),radial-gradient(700px 400px at 100% 100%,rgba(34,211,238,.08),transparent 60%);pointer-events:none}
+a{color:inherit;text-decoration:none}.g{background:linear-gradient(90deg,#a78bfa,#22d3ee 60%,#f472b6);-webkit-background-clip:text;background-clip:text;color:transparent}
+nav{position:relative;display:flex;align-items:center;justify-content:space-between;padding:18px 6vw;border-bottom:1px solid var(--line);backdrop-filter:blur(14px)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px}.logo i{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#a78bfa,#6d28d9 55%,#22d3ee);display:grid;place-items:center;font-style:normal;color:#fff}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;font-weight:600;background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;border:0;cursor:pointer;box-shadow:0 6px 20px -6px rgba(124,92,252,.7)}.btn.ghost{background:rgba(255,255,255,.05);border:1px solid var(--line2);box-shadow:none}
+main{position:relative;max-width:1100px;margin:auto;padding:60px 5vw 80px}
+h1{font-size:clamp(2.2rem,5vw,3.6rem);letter-spacing:-.04em;text-align:center;line-height:1.05}.sub{text-align:center;color:var(--mut);font-size:1.1rem;margin:14px auto 40px;max-width:560px}
+.totals{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:40px}.totals div{padding:18px 20px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.03);text-align:center}.totals b{display:block;font-size:28px;font-weight:800;letter-spacing:-.03em}.totals small{color:var(--mut);text-transform:uppercase;letter-spacing:.06em;font-size:11px}
+.tabs{display:flex;gap:6px;justify-content:center;margin-bottom:28px}.tabs button{background:rgba(255,255,255,.04);border:1px solid var(--line2);color:var(--mut);padding:8px 18px;border-radius:99px;cursor:pointer;font:inherit;font-weight:500}.tabs button.on{background:linear-gradient(135deg,rgba(139,92,246,.35),rgba(34,211,238,.2));color:#fff;border-color:rgba(139,92,246,.6)}
+.podium{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:14px;align-items:end;margin-bottom:30px}.pod{border:1px solid var(--line2);border-radius:20px;padding:24px 20px;text-align:center;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));position:relative;overflow:hidden}.pod:before{content:"";position:absolute;inset:0;background:radial-gradient(300px 120px at 50% 0%,var(--c),transparent 70%);opacity:.35}.pod.p1{--c:#fbbf24;padding-top:34px}.pod.p2{--c:#cbd5e1}.pod.p3{--c:#f59e0b}
+.pod .medal{width:54px;height:54px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;font-weight:800;font-size:20px;background:var(--c);color:#111;box-shadow:0 10px 30px -8px var(--c)}.pod h3{font-size:18px;letter-spacing:-.01em;position:relative}.pod p{color:var(--mut);font-size:12.5px;margin:4px 0 12px;position:relative}.pod b{font-size:26px;letter-spacing:-.03em;position:relative}.pod small{display:block;color:var(--mut)}
+table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:rgba(255,255,255,.02)}th,td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--line)}th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);background:rgba(255,255,255,.03)}tr:last-child td{border:0}tbody tr:hover td{background:rgba(139,92,246,.06)}td.n{text-align:right;font-variant-numeric:tabular-nums}
+.rank{width:30px;height:30px;border-radius:9px;display:inline-grid;place-items:center;font-weight:700;background:rgba(255,255,255,.06)}.rank.r1{background:#fbbf24;color:#111}.rank.r2{background:#cbd5e1;color:#111}.rank.r3{background:#f59e0b;color:#111}
+.site b{display:block}.site small{color:var(--mut)}.tag{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;background:rgba(255,255,255,.07);margin-left:6px;vertical-align:middle}.tag.pro{background:rgba(139,92,246,.25);color:#c4b5fd}.tag.team{background:rgba(34,211,238,.2);color:#a5f3fc}
+.bar{height:5px;background:rgba(255,255,255,.07);border-radius:3px;margin-top:6px}.bar i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#8b5cf6,#22d3ee)}
+h2{font-size:1.5rem;letter-spacing:-.02em;margin:50px 0 16px}
+.builders{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}.bl{display:flex;gap:12px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025)}.av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;flex-shrink:0}.bl b{display:block}.bl small{color:var(--mut)}
+.cta{text-align:center;margin-top:70px;padding:50px 20px;border:1px solid var(--line2);border-radius:24px;background:radial-gradient(60% 100% at 50% 100%,rgba(139,92,246,.25),transparent)}.cta h2{margin:0 0 10px;font-size:2rem}
+footer{text-align:center;color:var(--mut);padding:30px;border-top:1px solid var(--line);font-size:13px}
+@media(max-width:700px){.podium{grid-template-columns:1fr}.pod.p1{order:-1}th:nth-child(4),td:nth-child(4),th:nth-child(6),td:nth-child(6){display:none}}
+</style>
+</head>
+<body>
+<nav><a class="logo" href="/"><i>F</i>Forgevia</a><div><a class="btn ghost" href="/app" style="margin-right:8px">Dashboard</a><a class="btn" href="/app?signup=1">Build yours →</a></div></nav>
+<main>
+ <h1>The <span class="g">Leaderboard</span></h1>
+ <p class="sub">The most-visited sites and most active builders on Forgevia. Publish something great and climb the ranks.</p>
+ <div class="totals" id="totals"></div>
+ <div class="tabs"><button data-p="day">Today</button><button data-p="week">This week</button><button data-p="month" class="on">This month</button><button data-p="all">All time</button></div>
+ <div class="podium" id="podium"></div>
+ <table><thead><tr><th>#</th><th>Site</th><th>Builder</th><th>Stack</th><th class="n">Views</th><th class="n">Visitors</th><th class="n">Leads</th><th class="n">Score</th></tr></thead><tbody id="rows"></tbody></table>
+ <h2>Top builders</h2><div class="builders" id="builders"></div>
+ <div class="cta"><h2>Want your name here?</h2><p class="sub" style="margin-bottom:22px">Create a free account, pick a template, hit Publish. Rankings update live.</p><a class="btn" href="/app?signup=1">Start building — it's free</a></div>
+</main>
+<footer>© 2026 Forgevia · Rankings based on views, unique visitors, form leads and deploys.</footer>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=n=>n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(1)+'k':String(n);
+const hue=s=>{let h=0;for(const ch of s)h=(h*31+ch.charCodeAt(0))%360;return h};
+const STACK={static:'HTML',python:'Python',node:'Node.js'};
+async function load(p){const d=await (await fetch('/api/leaderboard?period='+p)).json();
+ $('#totals').innerHTML=[['Builders',d.totals.users],['Live sites',d.totals.sites],['Page views',d.totals.views],['Form leads',d.totals.forms]].map(([k,v])=>`<div><b>${fmt(v)}</b><small>${k}</small></div>`).join('');
+ const top=d.sites.slice(0,3),order=[top[1],top[0],top[2]];
+ $('#podium').innerHTML=order.map((s,i)=>s?`<a class="pod p${s.rank}" href="/sites/${s.name}/" target="_blank"><div class="medal">${s.rank}</div><h3>${esc(s.name)}</h3><p>by ${esc(s.owner)}${s.plan!=='free'?`<span class="tag ${s.plan}">${s.plan}</span>`:''}</p><b>${fmt(s.hits)}</b><small>views</small></a>`:'').join('');
+ const mx=Math.max(1,...d.sites.map(s=>s.hits));
+ $('#rows').innerHTML=d.sites.map(s=>`<tr><td><span class="rank r${s.rank}">${s.rank}</span></td><td class="site"><a href="/sites/${s.name}/" target="_blank"><b>${esc(s.name)}</b><small>${esc(s.seo_desc||'')}</small></a><div class="bar"><i style="width:${s.hits/mx*100}%"></i></div></td><td>${esc(s.owner)}${s.plan!=='free'?`<span class="tag ${s.plan}">${s.plan}</span>`:''}</td><td><span class="tag">${STACK[s.kind]||s.kind}</span></td><td class="n">${fmt(s.hits)}</td><td class="n">${fmt(s.uniq)}</td><td class="n">${s.forms}</td><td class="n"><b>${fmt(s.score)}</b></td></tr>`).join('')||'<tr><td colspan="8" style="text-align:center;color:var(--mut)">No published sites in this period yet.</td></tr>';
+ $('#builders').innerHTML=d.builders.map((b,i)=>`<div class="bl"><span class="av" style="background:hsl(${hue(b.name)},60%,45%)">${esc(b.name[0])}</span><div><b>${esc(b.name)}${b.plan!=='free'?`<span class="tag ${b.plan}">${b.plan}</span>`:''}</b><small>${b.projects} project${b.projects>1?'s':''} · ${fmt(b.hits)} views</small></div></div>`).join('')}
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));load(b.dataset.p)});
+load('month');
+</script>
+</body></html>
