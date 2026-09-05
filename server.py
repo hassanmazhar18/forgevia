@@ -2,7 +2,7 @@
 Forgevia — the all-in-one web platform.
 Build · Deploy · Rank · Scrape · Monitor · Grow
 """
-import shlex
+import shlex, sys
 import os, re, json, shutil, subprocess, time, hashlib, secrets, sqlite3, zipfile, io, threading, signal, socket, mimetypes
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
@@ -37,7 +37,7 @@ async def _reqlog(request, call_next):
     try:
         if not request.url.path.startswith("/static"):
             h=request.headers
-            with open(REQLOG,"a") as f:
+            with open(REQLOG, "a", encoding="utf-8") as f:
                 f.write(_json.dumps({"t":round(t),"ip":request.client.host if request.client else None,"m":request.method,"p":str(request.url),"code":code,
                   "ms":round((_time.time()-t)*1000),"origin":h.get("origin"),"ref":h.get("referer"),"proto":h.get("x-forwarded-proto"),"host":h.get("host"),
                   "ua":(h.get("user-agent") or "")[:60],"cookie":bool(h.get("cookie")),"auth":bool(h.get("authorization")),"sfd":h.get("sec-fetch-dest"),"sfs":h.get("sec-fetch-site"),"hdrs":(sorted(h.keys()) if request.url.path=="/api/me" else None),"qs":(str(request.url.query)[:40] if request.url.path=="/api/me" else None)})+"\n")
@@ -126,7 +126,7 @@ def _starter_project(uid: int, display: str):
     while safe(name).exists(): name = f"{base}-site-{i}"; i += 1
     tpl = TEMPLATES["landing"]; d = safe(name); d.mkdir(parents=True)
     for fn, content in tpl["files"].items():
-        p = d / fn; p.parent.mkdir(parents=True, exist_ok=True); p.write_text(content.replace("{{NAME}}", display))
+        p = d / fn; p.parent.mkdir(parents=True, exist_ok=True); p.write_text(content.replace("{{NAME}}", display), encoding="utf-8")
     with db() as c:
         c.execute("INSERT INTO projects(uid,name,kind,created,template) VALUES(?,?,?,?,?)", (uid, name, "static", time.time(), "landing"))
         u = dict(c.execute("SELECT * FROM users WHERE id=?", (uid,)).fetchone())
@@ -214,7 +214,7 @@ def create_project(p: ProjectIn, u=Depends(user)):
     tpl = TEMPLATES.get(p.template, TEMPLATES["blank"])
     d.mkdir()
     for f, content in tpl["files"].items():
-        fp = d / f; fp.parent.mkdir(parents=True, exist_ok=True); fp.write_text(content.replace("{{NAME}}", name))
+        fp = d / f; fp.parent.mkdir(parents=True, exist_ok=True); fp.write_text(content.replace("{{NAME}}", name), encoding="utf-8")
     with db() as c: c.execute("INSERT INTO projects(uid,name,kind,created,template) VALUES(?,?,?,?,?)", (u["id"], name, tpl.get("kind", p.kind), time.time(), p.template))
     log(u["id"], name, "created", f"from template {p.template}")
     return {"name": name}
@@ -290,7 +290,7 @@ def list_files(name: str, u=Depends(user)):
 def read_file(name: str, path: str, u=Depends(user)):
     own(name, u); p = safe(name, path)
     if not p.exists(): raise HTTPException(404, "File not found")
-    try: return {"content": p.read_text(), "binary": False}
+    try: return {"content": p.read_text(encoding="utf-8"), "binary": False}
     except UnicodeDecodeError: return {"content": "", "binary": True, "size": p.stat().st_size}
 
 @app.put("/api/projects/{name}/files/{path:path}")
@@ -300,7 +300,7 @@ async def write_file(name: str, path: str, request: Request, u=Depends(user)):
         try: content = json.loads(raw or b"{}").get("content", "")
         except Exception: raise HTTPException(400, "Invalid JSON body")
     else: content = raw.decode("utf-8", "replace")
-    p.parent.mkdir(parents=True, exist_ok=True); p.write_text(content); return {"ok": True}
+    p.parent.mkdir(parents=True, exist_ok=True); p.write_text(content, encoding="utf-8"); return {"ok": True}
 
 @app.post("/api/projects/{name}/upload")
 async def upload(name: str, path: str = "", files: list[UploadFile] = File(...), u=Depends(user)):
@@ -330,7 +330,7 @@ def search_files(name: str, q: str, u=Depends(user)):
     for p in d.rglob("*"):
         if p.is_file():
             try:
-                for i, line in enumerate(p.read_text().splitlines(), 1):
+                for i, line in enumerate(p.read_text(encoding="utf-8").splitlines(), 1):
                     if q.lower() in line.lower(): out.append({"file": str(p.relative_to(d)), "line": i, "text": line.strip()[:160]})
             except Exception: pass
         if len(out) > 200: break
@@ -372,14 +372,14 @@ def publish(name: str, u=Depends(user)):
     # inject analytics + GA + SEO defaults + generate sitemap/robots
     pages = []
     for f in dst.rglob("*.html"):
-        html = f.read_text(errors="replace")
+        html = f.read_text(encoding="utf-8", errors="replace")
         if p.get("ga"): html = html.replace("</head>", f'<script async src="https://www.googletagmanager.com/gtag/js?id={p["ga"]}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments)}}gtag("js",new Date());gtag("config","{p["ga"]}");</script></head>', 1)
         html = html.replace("</body>", (INJECT % name) + "</body>", 1) if "</body>" in html else html + (INJECT % name)
-        f.write_text(html); pages.append(str(f.relative_to(dst)))
+        f.write_text(html, encoding="utf-8"); pages.append(str(f.relative_to(dst)))
     base = f"/sites/{name}/"
     if not (dst / "sitemap.xml").exists():
         (dst / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + "".join(f"<url><loc>{base}{'' if pg=='index.html' else pg}</loc><lastmod>{datetime.now().date()}</lastmod></url>" for pg in pages) + "</urlset>")
-    if not (dst / "robots.txt").exists(): (dst / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {base}sitemap.xml\n")
+    if not (dst / "robots.txt").exists(): (dst / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {base}sitemap.xml\n", encoding="utf-8")
     with db() as c: c.execute("UPDATE projects SET published=? WHERE name=?", (time.time(), name))
     log(u["id"], name, "published", f"{len(pages)} pages")
     if p["kind"] != "static": start_app(name, p["kind"])
@@ -415,7 +415,7 @@ async def serve_site(name: str, req: Request, path: str = ""):
     if not f.exists() and not path.endswith(".html") and (base / (path + ".html")).exists(): f = base / (path + ".html")
     if not f.exists():
         nf = base / "404.html"
-        if nf.exists(): return HTMLResponse(nf.read_text(), status_code=404)
+        if nf.exists(): return HTMLResponse(nf.read_text(encoding="utf-8"), status_code=404)
         return HTMLResponse(NOT_FOUND, status_code=404)
     return FileResponse(f, headers={"Cache-Control": "public, max-age=60", "X-Powered-By": "Forgevia"})
 
@@ -450,12 +450,18 @@ def start_app(name, kind):
     else:
         pkg = d / "package.json"; entry = "index.js"
         if pkg.exists():
-            try: entry = json.loads(pkg.read_text()).get("main", "index.js")
+            try: entry = json.loads(pkg.read_text(encoding="utf-8")).get("main", "index.js")
             except Exception: pass
             if not (d / "node_modules").exists(): subprocess.run(["npm", "install", "--silent"], cwd=d, capture_output=True, timeout=300)
         cmd = ["node", entry]
-    logf = open(d / ".forgevia.log", "w")
+    logf = open(d / ".forgevia.log", "w", encoding="utf-8")
     env = {"PATH": "/usr/local/bin:/usr/bin:/bin", "HOME": str(d), "LANG": "C.UTF-8", "PORT": str(port), "FORGEVIA_PROJECT": name}
+    if os.name == "nt":
+        env = {**os.environ, "PORT": str(port), "FORGEVIA_PROJECT": name, "HOME": str(d)}
+        if cmd[0] == "python3": cmd[0] = sys.executable
+        proc = subprocess.Popen(cmd, cwd=d, env=env, stdout=logf, stderr=subprocess.STDOUT, creationflags=getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0))
+        RUNNING[name] = {"proc": proc, "port": port, "started": time.time(), "cmd": " ".join(cmd)}
+        time.sleep(1.5); return port
     if HAVE_SANDBOX:
         # user apps run as the unprivileged sandbox user; give it access to this project dir only
         subprocess.run(["chmod", "-R", "a+rwX", str(d)], capture_output=True)
@@ -467,6 +473,10 @@ def start_app(name, kind):
 def stop_app(name):
     r = RUNNING.pop(name, None)
     if r:
+        if os.name == "nt":
+            try: subprocess.run(["taskkill", "/F", "/T", "/PID", str(r["proc"].pid)], capture_output=True, timeout=10)
+            except Exception: pass
+            return
         try: os.killpg(os.getpgid(r["proc"].pid), signal.SIGTERM)
         except Exception: pass
         if HAVE_SANDBOX:
@@ -494,7 +504,7 @@ def app_stop(name: str, u=Depends(user)): own(name, u); stop_app(name); return {
 def app_status(name: str, u=Depends(user)):
     own(name, u); r = RUNNING.get(name); logp = safe(name) / ".forgevia.log"
     alive = r and r["proc"].poll() is None
-    return {"running": bool(alive), "port": r["port"] if r else None, "uptime": time.time() - r["started"] if r else 0, "cmd": r["cmd"] if r else None, "log": logp.read_text(errors="replace")[-8000:] if logp.exists() else ""}
+    return {"running": bool(alive), "port": r["port"] if r else None, "uptime": time.time() - r["started"] if r else 0, "cmd": r["cmd"] if r else None, "log": logp.read_text(encoding="utf-8", errors="replace")[-8000:] if logp.exists() else ""}
 
 # ═══════════════════════════════ TERMINAL / RUN ═══════════════════════════════
 class RunIn(BaseModel): code: str = ""; lang: str = "python"; cmd: str = ""; project: Optional[str] = None; stdin: str = ""
@@ -520,6 +530,7 @@ def run_code(r: RunIn, u=Depends(user)):
 # ── Sandbox: user code runs as an unprivileged user, in a throwaway dir, with CPU/memory/file limits ──
 SANDBOX_USER = os.environ.get("FV_SANDBOX_USER", "fvrun")
 def _have_sandbox_user():
+    if os.name == "nt": return False
     try: import pwd; pwd.getpwnam(SANDBOX_USER); return subprocess.run(["sudo", "-n", "-u", SANDBOX_USER, "true"], capture_output=True, timeout=5).returncode == 0
     except Exception: return False
 HAVE_SANDBOX = _have_sandbox_user()
@@ -535,6 +546,12 @@ def sandbox_run(cmd, cwd, stdin, project=False):
     try:
         inner = " ".join(shlex.quote(c) for c in cmd)
         env = {"PATH": "/usr/local/bin:/usr/bin:/bin", "HOME": work, "LANG": "C.UTF-8", "PYTHONDONTWRITEBYTECODE": "1"}
+        if os.name == "nt":
+            wenv = {"PATH": os.environ.get("PATH", ""), "SYSTEMROOT": os.environ.get("SYSTEMROOT", r"C:\Windows"), "TEMP": work, "TMP": work, "HOME": work, "USERPROFILE": work, "PYTHONDONTWRITEBYTECODE": "1", "PYTHONIOENCODING": "utf-8"}
+            wcmd = list(cmd)
+            if wcmd and wcmd[0] == "python3": wcmd[0] = sys.executable
+            if wcmd and wcmd[0] == "bash": wcmd = ["cmd", "/c"] + wcmd[2:]
+            return subprocess.run(wcmd, capture_output=True, text=True, timeout=30, input=stdin, env=wenv, cwd=work, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         if HAVE_SANDBOX:
             full = ["sudo", "-n", "-u", SANDBOX_USER, "env", "-i"] + [f"{k}={v}" for k, v in env.items()] + ["bash", "-c", limits + "cd " + shlex.quote(work) + " && " + inner]
         else:
@@ -758,7 +775,7 @@ def seo_autofix(name: str, u=Depends(user)):
     """Auto-fix common SEO problems across all HTML files in a project."""
     p = own(name, u); d = safe(name); fixed = []
     for f in d.rglob("*.html"):
-        html = f.read_text(errors="replace"); soup = BeautifulSoup(html, "lxml"); changed = []
+        html = f.read_text(encoding="utf-8", errors="replace"); soup = BeautifulSoup(html, "lxml"); changed = []
         if not soup.head: continue
         if not soup.find("meta", charset=True): soup.head.insert(0, soup.new_tag("meta", charset="UTF-8")); changed.append("charset")
         if not soup.find("meta", attrs={"name": "viewport"}): t = soup.new_tag("meta"); t["name"] = "viewport"; t["content"] = "width=device-width, initial-scale=1"; soup.head.insert(1, t); changed.append("viewport")
@@ -782,7 +799,7 @@ def seo_autofix(name: str, u=Depends(user)):
             if not s.get("async") and not s.get("defer"): s["defer"] = ""
         for a in soup.find_all("a", target="_blank"):
             if "noopener" not in (a.get("rel") or []): a["rel"] = (a.get("rel") or []) + ["noopener"]
-        if changed: f.write_text(str(soup)); fixed.append({"file": str(f.relative_to(d)), "fixed": changed})
+        if changed: f.write_text(str(soup), encoding="utf-8"); fixed.append({"file": str(f.relative_to(d)), "fixed": changed})
     log(u["id"], name, "seo autofix", f"{len(fixed)} files"); return {"fixed": fixed}
 
 # ═══════════════════════════════ SCRAPER ═══════════════════════════════
@@ -1055,7 +1072,7 @@ def _asset_v():
 ASSET_V = _asset_v()
 def _page(name):
     v = _asset_v()
-    html = (ROOT / "static" / name).read_text().replace("/static/app.css", f"/static/a/{v}/app.css").replace("/static/app.js", f"/static/a/{v}/app.js")
+    html = (ROOT / "static" / name).read_text(encoding="utf-8").replace("/static/app.css", f"/static/a/{v}/app.css").replace("/static/app.js", f"/static/a/{v}/app.js")
     return HTMLResponse(html, headers={"Cache-Control": "no-store, no-cache, must-revalidate, max-age=0", "Pragma": "no-cache", "Expires": "0"})
 
 @app.middleware("http")
@@ -1088,7 +1105,7 @@ def sitemap(req: Request):
     return Response(body, media_type="application/xml")
 
 @app.get("/login", response_class=HTMLResponse)
-def login_page(): return HTMLResponse((ROOT/"static"/"login.html").read_text(), headers={"Cache-Control":"no-store"})
+def login_page(): return HTMLResponse((ROOT/"static"/"login.html").read_text(encoding="utf-8"), headers={"Cache-Control":"no-store"})
 @app.get("/app", response_class=HTMLResponse)
 def dashboard(req: Request, t: str = ""):
     resp = _page("app.html")
