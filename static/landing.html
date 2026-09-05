@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Forgevia — Build, deploy, rank & scrape. One platform.</title>
+<meta name="description" content="Forgevia replaces Replit, Glitch, Hostinger, PythonAnywhere and your SEO tools. Code in the browser, publish in one click, audit SEO, scrape the web, monitor uptime — free.">
+<meta property="og:title" content="Forgevia — the all-in-one web platform"><meta property="og:description" content="Code, host, rank, scrape & monitor. One tab."><meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' x2='1'><stop stop-color='%237c5cff'/><stop offset='1' stop-color='%2322d3ee'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23g)'/><path d='M30 25h40v12H44v12h22v12H44v14H30z' fill='white'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07080c;--fg:#f1f2f6;--mut:#8b91a5;--acc:#7c5cff;--cy:#22d3ee;--line:#1c2030}
+*{box-sizing:border-box;margin:0}html{scroll-behavior:smooth}body{font-family:Inter,system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--fg);line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.g{background:linear-gradient(90deg,var(--acc),var(--cy));-webkit-background-clip:text;background-clip:text;color:transparent}
+nav{display:flex;align-items:center;justify-content:space-between;padding:18px 6vw;position:sticky;top:0;z-index:10;background:#07080cc0;backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px}.logo i{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--acc),var(--cy));display:grid;place-items:center;font-style:normal;font-size:16px;color:#fff}
+nav .links a{margin-left:26px;color:var(--mut);font-size:15px}nav .links a:hover{color:#fff}
+.btn{background:linear-gradient(135deg,#8b5cf6,#6d28d9);box-shadow:0 6px 20px -6px rgba(124,92,252,.7),inset 0 1px 0 rgba(255,255,255,.15);display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:10px;font-weight:600;background:var(--acc);color:#fff;border:0;cursor:pointer;font-size:15px;transition:.2s}.btn:hover{transform:translateY(-1px);filter:brightness(1.1);box-shadow:0 10px 30px -8px rgba(124,92,252,.9)}.btn.ghost{background:#ffffff0a;border:1px solid #ffffff1f;box-shadow:inset 0 1px 0 #ffffff14;backdrop-filter:blur(10px)}.btn.big{padding:16px 30px;font-size:17px}
+.hero{text-align:center;padding:12vh 6vw 8vh;position:relative}
+.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(60% 50% at 50% 0%,#7c5cff40,transparent 70%),linear-gradient(#ffffff06 1px,transparent 1px),linear-gradient(90deg,#ffffff06 1px,transparent 1px);background-size:100% 100%,56px 56px,56px 56px;-webkit-mask-image:radial-gradient(70% 70% at 50% 30%,#000 30%,transparent 100%);mask-image:radial-gradient(70% 70% at 50% 30%,#000 30%,transparent 100%);pointer-events:none}.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.5;pointer-events:none;animation:float 12s ease-in-out infinite}.orb.a{width:420px;height:420px;background:#7c5cff;left:-120px;top:120px}.orb.b{width:360px;height:360px;background:#22d3ee;right:-100px;top:260px;animation-delay:-4s}.orb.c{width:260px;height:260px;background:#f472b6;left:45%;top:560px;opacity:.28;animation-delay:-8s}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-30px)}}
+.pill{display:inline-flex;align-items:center;gap:6px;box-shadow:inset 0 1px 0 #ffffff14;padding:6px 14px;border-radius:99px;border:1px solid var(--line);background:#ffffff08;color:var(--mut);font-size:13px;margin-bottom:26px}.pill b{color:var(--cy)}
+h1{text-shadow:0 0 80px rgba(124,92,252,.35);font-size:clamp(2.6rem,7vw,5.4rem);line-height:1.02;letter-spacing:-.04em;font-weight:800;max-width:1000px;margin:0 auto 22px}
+.hero p{font-size:clamp(1.05rem,2vw,1.35rem);color:var(--mut);max-width:680px;margin:0 auto 36px}
+.cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.replaces{margin-top:60px;color:var(--mut);font-size:14px}.replaces div{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}.replaces span{padding:8px 16px;border:1px solid var(--line);border-radius:8px;text-decoration:line-through;color:#5b6172;background:#ffffff05}
+.shot{position:relative;margin:70px auto 0;max-width:1100px;border-radius:16px;border:1px solid var(--line);background:#0d1017;box-shadow:0 40px 120px #7c5cff22;overflow:hidden;text-align:left}
+.shot .bar{display:flex;gap:6px;padding:12px 16px;border-bottom:1px solid var(--line)}.shot .bar i{width:11px;height:11px;border-radius:50%;background:#2b3040}.shot .bar i:first-child{background:#ff5f57}.shot .bar i:nth-child(2){background:#febc2e}.shot .bar i:nth-child(3){background:#28c840}
+.shot:before{content:"";position:absolute;inset:-1px;border-radius:17px;padding:1px;background:linear-gradient(135deg,#7c5cff88,transparent 40%,transparent 60%,#22d3ee66);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}.shot .body{display:grid;grid-template-columns:200px 1fr 1fr;min-height:340px;font-size:13px}
+.shot .side{border-right:1px solid var(--line);padding:16px;color:var(--mut)}.shot .side div{padding:6px 8px;border-radius:6px}.shot .side .on{background:#7c5cff22;color:#c4b5fd}
+.shot pre{padding:18px;color:#c9d1d9;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;line-height:1.7;border-right:1px solid var(--line);overflow:hidden}.k{color:#ff7b72}.s{color:#a5d6ff}.t{color:#7ee787}.c{color:#8b949e}
+.shot .prev{padding:28px;background:#fff;color:#111;display:flex;flex-direction:column;justify-content:center;text-align:center}.shot .prev h3{font-size:26px;letter-spacing:-.02em;margin-bottom:8px}.shot .prev small{color:#666}.shot .prev b{display:inline-block;margin-top:16px;background:#7c5cff;color:#fff;padding:8px 16px;border-radius:8px;font-size:13px}
+section{padding:90px 6vw;max-width:1200px;margin:auto}h2{font-size:clamp(2rem,4.5vw,3rem);letter-spacing:-.03em;line-height:1.1;text-align:center;margin-bottom:14px}.sub{text-align:center;color:var(--mut);font-size:1.15rem;max-width:620px;margin:0 auto 56px}
+.feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}.feat div{padding:28px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,#ffffff08,#ffffff02);backdrop-filter:blur(10px);transition:.3s cubic-bezier(.2,.8,.2,1);position:relative;overflow:hidden}.feat div:before{content:"";position:absolute;inset:0;background:radial-gradient(300px 100px at 0 0,#7c5cff22,transparent);opacity:0;transition:.3s}.feat div:hover:before{opacity:1}.feat div:hover{border-color:#7c5cff88;transform:translateY(-4px);box-shadow:0 20px 50px -20px #7c5cff66}.feat .fi{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(124,92,252,.3),rgba(34,211,238,.12));border:1px solid #ffffff14;box-shadow:inset 0 1px 0 #ffffff1a}.feat .fi svg{width:22px;height:22px;fill:none;stroke:#c4b5fd;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.feat h3{margin:14px 0 8px;font-size:1.15rem}.feat p{color:var(--mut);font-size:.95rem}.feat small{display:block;margin-top:12px;color:var(--cy);font-size:12px}
+.cmp{width:100%;border-collapse:collapse;font-size:14.5px;border:1px solid var(--line);border-radius:14px;overflow:hidden}.cmp th,.cmp td{padding:14px 16px;text-align:center;border-bottom:1px solid var(--line)}.cmp th:first-child,.cmp td:first-child{text-align:left}.cmp th{background:#ffffff08;color:var(--mut);font-weight:600}.cmp th.me{color:#fff;background:linear-gradient(135deg,#7c5cff55,#22d3ee33)}.cmp td.me{background:#7c5cff14;color:#a5f3fc;font-weight:600}.cmp .y{color:#22c55e}.cmp .n{color:#3b4152}
+.stats{display:flex;gap:40px;justify-content:center;flex-wrap:wrap;text-align:center}.stats>div{padding:26px 34px;border:1px solid var(--line);border-radius:18px;background:#ffffff05;min-width:200px}.stats b{display:block;font-size:2.6rem;font-weight:800;letter-spacing:-.03em}.stats small{color:var(--mut)}
+.price{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;max-width:960px;margin:auto}.price div{padding:30px;border:1px solid var(--line);border-radius:18px;text-align:center}.price .hot{border-color:#8b5cf6;background:linear-gradient(180deg,#7c5cff1f,transparent);position:relative;box-shadow:0 30px 80px -30px #7c5cff88;transform:scale(1.03)}.price .hot:before{content:"MOST POPULAR";position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--acc);font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;letter-spacing:.06em}.price h3{font-size:1.1rem;color:var(--mut)}.price .p{font-size:2.8rem;font-weight:800;margin:10px 0}.price .p span{font-size:1rem;color:var(--mut);font-weight:400}.price ul{list-style:none;padding:0;margin:18px 0 24px;text-align:left;color:#c7cbd6}.price li{padding:6px 0;border-bottom:1px solid var(--line)}.price li:before{content:"✓ ";color:#22c55e}
+.faq{max-width:760px;margin:auto}.faq details{border-bottom:1px solid var(--line);padding:18px 0}.faq summary{cursor:pointer;font-weight:600;font-size:1.05rem;list-style:none;display:flex;justify-content:space-between}.faq summary:after{content:"+";color:var(--mut)}.faq details[open] summary:after{content:"–"}.faq p{color:var(--mut);margin-top:10px}
+.final{text-align:center;padding:100px 6vw;background:radial-gradient(50% 60% at 50% 100%,#7c5cff2a,transparent)}
+footer{border-top:1px solid var(--line);padding:40px 6vw;display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;color:var(--mut);font-size:14px}footer a{margin-right:20px}footer a:hover{color:#fff}
+@media(max-width:800px){.shot .body{grid-template-columns:1fr}.shot .side,.shot pre{display:none}nav .links{display:none}}
+.fade{opacity:0;transform:translateY(20px);transition:.7s}.fade.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<nav><a class="logo" href="/"><i>F</i>Forgevia</a><div class="links"><a href="#features">Features</a><a href="#compare">Compare</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a href="/leaderboard">Leaderboard</a><a href="/api/docs">API</a></div><div><a class="btn ghost" href="/app" style="margin-right:8px">Sign in</a><a class="btn" href="/login?signup=1">Start free →</a></div></nav>
+
+<header class="hero"><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div>
+ <div class="pill"><b>New</b> &nbsp;·&nbsp; Auto-fix SEO across your whole site in one click</div>
+ <h1>Build it. Ship it. <span class="g">Rank it.</span><br>All in one tab.</h1>
+ <p>Forgevia is the browser IDE, hosting platform, SEO suite, web scraper and uptime monitor — fused into one fast, beautiful workspace. Stop paying for five tools.</p>
+ <div class="cta"><a class="btn big" href="/login?signup=1">Start building — it's free</a><a class="btn big ghost" href="#demo">See how it works</a></div>
+ <div class="replaces">Forgevia replaces<div><span>Replit</span><span>Glitch</span><span>Hostinger</span><span>PythonAnywhere</span><span>GoDaddy Builder</span><span>Ahrefs Lite</span><span>Octoparse</span><span>UptimeRobot</span></div></div>
+ <div class="shot" id="demo"><div class="bar"><i></i><i></i><i></i><span style="margin-left:auto;color:#5b6172;font-size:12px">forgevia.com/app — my-startup</span></div>
+  <div class="body"><div class="side"><div class="on">📄 index.html</div><div>🎨 style.css</div><div>⚡ app.js</div><div>🗺 sitemap.xml</div><br><div style="color:#22c55e">● Published</div><div>👁 1,284 views</div><div>📊 SEO 96/100</div></div>
+  <pre><span class="c">&lt;!-- index.html --&gt;</span>
+<span class="k">&lt;section</span> <span class="t">class</span>=<span class="s">"hero"</span><span class="k">&gt;</span>
+  <span class="k">&lt;h1&gt;</span>Launch faster<span class="k">&lt;/h1&gt;</span>
+  <span class="k">&lt;p&gt;</span>Built &amp; hosted on Forgevia<span class="k">&lt;/p&gt;</span>
+  <span class="k">&lt;form</span> <span class="t">action</span>=<span class="s">"/api/forms/my-startup"</span><span class="k">&gt;</span>
+    <span class="k">&lt;input</span> <span class="t">name</span>=<span class="s">"email"</span><span class="k">&gt;</span>
+    <span class="k">&lt;button&gt;</span>Join<span class="k">&lt;/button&gt;</span>
+  <span class="k">&lt;/form&gt;</span>
+<span class="k">&lt;/section&gt;</span></pre>
+  <div class="prev"><h3>Launch faster</h3><small>Built &amp; hosted on Forgevia</small><b>Join waitlist</b></div></div></div>
+</header>
+
+<section id="features"><h2>Everything you need, <span class="g">nothing you don't</span></h2><p class="sub">Each of these is a paid product somewhere else. Here they share one login, one dashboard, one URL.</p>
+<div class="feat">
+ <div class="fade"><span class="fi"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H4z M2 19h20 M10 16v3 M14 16v3"/></svg></span><h3>Browser IDE</h3><p>Monaco (VS Code's editor) with IntelliSense, multi-file projects, live preview, quick-open, project search, drag-and-drop uploads and an integrated terminal.</p><small>Replaces Replit · Glitch</small></div>
+ <div class="fade"><span class="fi"><svg viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2 0-2.8-.8-.7-2-.7-3 .8z M12 15l-3-3 5-7c1.5-1.7 4-3 7-3 0 3-1.3 5.5-3 7l-6 6z"/></svg></span><h3>One-click hosting</h3><p>Static sites go live instantly. Python & Node apps run as real processes with auto dependency install, logs, restart and a proxied public URL.</p><small>Replaces Hostinger · PythonAnywhere</small></div>
+ <div class="fade"><span class="fi"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8 M14 7h7v7"/></svg></span><h3>SEO Suite</h3><p>25-point audits, full-site crawler with broken-link detection, keyword research from live autosuggest, meta/schema generator and one-click Auto-fix.</p><small>Replaces Ahrefs / SEMrush basics</small></div>
+ <div class="fade"><span class="fi"><svg viewBox="0 0 24 24"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z M21 21l-4.5-4.5"/></svg></span><h3>Visual web scraper</h3><p>Text, links, images, tables, emails, JSON-LD, markdown — or structured rows via CSS selectors. Multi-page pagination. Export JSON/CSV.</p><small>Replaces Octoparse · ParseHub</small></div>
+ <div class="fade"><span class="fi"><svg viewBox="0 0 24 24"><path d="M4 20V10 M10 20V4 M16 20v-8 M22 20H2"/></svg></span><h3>Privacy-first analytics</h3><p>Page views, uniques, referrers, devices & browsers — no cookies, no consent banner, auto-injected on publish. GA4 supported too.</p><small>Replaces Plausible</small></div>
+ <div class="fade"><span class="fi"><svg viewBox="0 0 24 24"><path d="M3 5h18v14H3z M3 6l9 7 9-7"/></svg></span><h3>Forms & KV storage</h3><p>Point any HTML form at Forgevia and collect submissions. Persist JSON with a built-in key-value store — from the browser or your backend.</p><small>Replaces Formspree · Firebase-lite</small></div>
+ <div class="fade"><span class="fi"><svg viewBox="0 0 24 24"><path d="M2 12h4l3-8 4 16 3-8h6"/></svg></span><h3>Uptime monitoring</h3><p>Ping any URL every 5 minutes, track response time and uptime %, see incident history at a glance.</p><small>Replaces UptimeRobot</small></div>
+ <div class="fade"><span class="fi"><svg viewBox="0 0 24 24"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M12 6v6l4 2"/></svg></span><h3>Versions & rollback</h3><p>Every publish is a snapshot. Restore any of the last 30 versions in one click. Export/import whole projects as ZIP.</p><small>Replaces Git-for-beginners</small></div>
+ <div class="fade"><span class="fi"><svg viewBox="0 0 24 24"><path d="M12 8V4H8 M4 8h16v12H4z M2 14h2 M20 14h2 M15 13v2 M9 13v2"/></svg></span><h3>Built-in assistant</h3><p>Generate navbars, pricing tables, forms, SEO heads; diagnose error messages; answer how-to questions — right inside the editor.</p><small>Replaces Copilot-lite</small></div>
+ <div class="fade"><span class="fi"><svg viewBox="0 0 24 24"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M2 12h20 M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg></span><h3>Domains toolkit</h3><p>Availability checker across 10 TLDs, DNS lookup, WHOIS, HTTP header & security-score scanner, page-speed analyser, custom-domain binding with verification.</p><small>Replaces GoDaddy tools</small></div>
+ <div class="fade"><span class="fi"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0 0 18c1 0 1.5-.7 1.5-1.5 0-.5-.3-.8-.5-1.2-.3-.4-.5-.8-.5-1.3 0-1 .8-1.5 1.5-1.5H16a5 5 0 0 0 5-5c0-4-4-7.5-9-7.5z M7.5 12a1 1 0 1 0 0-2 1 1 0 0 0 0 2z M10 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2z M14.5 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/></svg></span><h3>9 pro templates</h3><p>SaaS landing, portfolio, blog, docs, restaurant, store with cart, coming-soon, Python API, Node API — all SEO-ready with schema markup.</p><small>Replaces Wix templates</small></div>
+ <div class="fade"><span class="fi"><svg viewBox="0 0 24 24"><path d="M5 11h14v10H5z M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><h3>Password protection & sharing</h3><p>Lock a site behind a password, share code snippets with public links, and explore what others have shipped.</p><small>Replaces Pastebin · Netlify Locks</small></div>
+</div></section>
+
+<section id="compare"><h2>How Forgevia <span class="g">compares</span></h2><p class="sub">Feature-for-feature against the tools you're using today.</p>
+<div style="overflow:auto"><table class="cmp"><thead><tr><th>Feature</th><th class="me">Forgevia</th><th>Replit</th><th>Glitch</th><th>Hostinger</th><th>PythonAnywhere</th></tr></thead><tbody>
+<tr><td>Browser IDE + live preview</td><td class="me y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="n">✗</td><td class="n">partial</td></tr>
+<tr><td>Static + Python + Node hosting</td><td class="me y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="n">PHP only</td><td class="n">Python only</td></tr>
+<tr><td>SEO audit & site crawler</td><td class="me y">✓</td><td class="n">✗</td><td class="n">✗</td><td class="n">basic</td><td class="n">✗</td></tr>
+<tr><td>Keyword research & auto-fix</td><td class="me y">✓</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td></tr>
+<tr><td>Web scraper (no code)</td><td class="me y">✓</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td></tr>
+<tr><td>Built-in analytics</td><td class="me y">✓</td><td class="n">✗</td><td class="n">✗</td><td class="y">✓</td><td class="n">✗</td></tr>
+<tr><td>Forms backend + KV storage</td><td class="me y">✓</td><td class="n">DB only</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td></tr>
+<tr><td>Uptime monitoring</td><td class="me y">✓</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td></tr>
+<tr><td>Version rollback</td><td class="me y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="n">backups</td><td class="n">✗</td></tr>
+<tr><td>Domain / DNS / WHOIS / speed tools</td><td class="me y">✓</td><td class="n">✗</td><td class="n">✗</td><td class="n">partial</td><td class="n">✗</td></tr>
+<tr><td>Free tier</td><td class="me y">Generous</td><td class="n">limited</td><td class="y">✓</td><td class="n">✗</td><td class="y">✓</td></tr>
+</tbody></table></div></section>
+
+<section><div class="stats"><div><b class="g" data-n="12">12</b><small>tools in one</small></div><div><b class="g">&lt;1s</b><small>publish time</small></div><div><b class="g">25</b><small>SEO checks per page</small></div><div><b class="g" id="stProjects">0</b><small>projects created</small></div></div></section>
+
+<section id="pricing"><h2>Simple, honest <span class="g">pricing</span></h2><p class="sub">Start free. Upgrade when you outgrow it. No credit card to begin.</p>
+<div class="price">
+ <div><h3>Free</h3><p class="p">$0<span>/forever</span></p><ul><li>5 projects</li><li>Static + 1 app</li><li>SEO audits & scraper</li><li>Analytics · Forms · KV</li><li>3 uptime monitors</li><li>forgevia.com subdomain</li></ul><a class="btn ghost" href="/login?signup=1">Get started</a></div>
+ <div class="hot"><h3>Pro</h3><p class="p">$9<span>/mo</span></p><ul><li>Unlimited projects & apps</li><li>Custom domains + SSL</li><li>Site crawler & auto-fix</li><li>20 uptime monitors</li><li>Priority builds</li><li>No Forgevia badge</li></ul><a class="btn" href="/login?signup=1">Start Pro trial</a></div>
+ <div><h3>Team</h3><p class="p">$29<span>/mo</span></p><ul><li>Everything in Pro</li><li>5 seats · shared projects</li><li>API access</li><li>White-label sites</li><li>SLA & support</li></ul><a class="btn ghost" href="/login?signup=1">Contact sales</a></div>
+</div></section>
+
+<section id="faq"><h2>Questions? <span class="g">Answers.</span></h2><div class="faq" style="margin-top:40px">
+<details><summary>Is Forgevia really free?</summary><p>Yes. The free plan has real limits (5 projects, 1 running app) but no time bomb. Build, publish, audit and scrape at no cost.</p></details>
+<details><summary>What languages can I host?</summary><p>Static HTML/CSS/JS instantly, plus Python 3 and Node.js apps as long-running processes. Dependencies from requirements.txt / package.json install automatically on publish.</p></details>
+<details><summary>Can I use my own domain?</summary><p>Yes — add it under project settings, copy the DNS records to your registrar, verify, done. SSL is automatic.</p></details>
+<details><summary>How does the SEO auto-fix work?</summary><p>It parses every HTML file in your project and inserts missing essentials: charset, viewport, lang, title, description, Open Graph, canonical, alt text, lazy-loading, defer on scripts, noopener on external links. You review the diff before publishing.</p></details>
+<details><summary>Is the scraper legal to use?</summary><p>Scraping publicly available data is generally legal, but you're responsible for respecting robots.txt, terms of service and rate limits of the sites you target.</p></details>
+<details><summary>Can I export my work?</summary><p>Always. Download any project as a ZIP, export analytics/forms/scrapes as JSON or CSV. No lock-in.</p></details>
+</div></section>
+
+<div class="final"><h2>Ready to forget the other five tabs?</h2><p class="sub" style="margin-bottom:30px">Join builders shipping faster with Forgevia.</p><a class="btn big" href="/login?signup=1">Create your free account →</a></div>
+<footer><div><a class="logo" href="/"><i>F</i>Forgevia</a><p style="margin-top:8px">Build · Deploy · Rank · Scrape · Monitor</p></div><div><a href="#features">Features</a><a href="#pricing">Pricing</a><a href="/api/docs">API docs</a><a href="/app">Dashboard</a></div><div>© 2026 Forgevia. Made in Lahore.</div></footer>
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add('in')),{threshold:.15});document.querySelectorAll('.fade').forEach(e=>io.observe(e));
+fetch('/api/stats').then(r=>r.json()).then(s=>{const el=document.getElementById('stProjects');let n=0,t=Math.max(s.projects,1);const iv=setInterval(()=>{n=Math.min(n+Math.ceil(t/30),t);el.textContent=n.toLocaleString();if(n>=t)clearInterval(iv)},30)}).catch(()=>{});
+</script>
+</body></html>
