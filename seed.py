@@ -34,7 +34,7 @@ def main():
             if not d.exists():
                 d.mkdir()
                 for f, content in TEMPLATES[tpl]["files"].items():
-                    fp = d / f; fp.parent.mkdir(parents=True, exist_ok=True); fp.write_text(content.replace("{{NAME}}", proj))
+                    fp = d / f; fp.parent.mkdir(parents=True, exist_ok=True); fp.write_text(content.replace("{{NAME}}", proj), encoding="utf-8")
             pub = created + random.randint(1, 3) * 86400
             c.execute("INSERT OR IGNORE INTO projects(uid,name,kind,created,template,published,seo_title,seo_desc) VALUES(?,?,?,?,?,?,?,?)",
                       (uid, proj, TEMPLATES[tpl].get("kind","static"), created, tpl, pub, f"{name.split()[0]}'s {TEMPLATES[tpl]['name']}", TEMPLATES[tpl]["desc"]))
@@ -43,7 +43,7 @@ def main():
                 dst = SITES / proj
                 if dst.exists(): shutil.rmtree(dst)
                 shutil.copytree(d, dst)
-                for f in dst.rglob("*.html"): f.write_text(f.read_text().replace("</body>", (INJECT % proj) + "</body>"))
+                for f in dst.rglob("*.html"): f.write_text(f.read_text(encoding="utf-8").replace("</body>", (INJECT % proj) + "</body>"))
             # traffic: popularity curve
             weight = random.choice([30, 80, 150, 300, 600, 1200, 2500, 4000])
             for _ in range(weight):
